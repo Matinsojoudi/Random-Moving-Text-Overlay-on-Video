@@ -3,7 +3,6 @@ import numpy as np
 import random
 from moviepy.editor import VideoFileClip, VideoClip
 
-
 def add_moving_text_to_video(input_video_path, output_video_path, text):
     # Load the video using MoviePy
     clip = VideoFileClip(input_video_path)
@@ -16,15 +15,15 @@ def add_moving_text_to_video(input_video_path, output_video_path, text):
         frame = get_frame(t)
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
-        # Generate random coordinates for the text
-        x = random.randint(0, width - 100)
-        y = random.randint(50, height - 50)
+        # Generate coordinates for the text with reduced speed
+        x = int(width * (t / clip.duration)) % (width - 100)
+        y = int(height * (t / clip.duration)) % (height - 50) + 50
 
         # Add text to the frame
         font = cv2.FONT_HERSHEY_SIMPLEX
-        font_scale = 2
-        font_color = (0, 255, 255)  # Yellow color
-        thickness = 3
+        font_scale = 1  # Smaller font size
+        font_color = (169, 169, 169)  # Gray color
+        thickness = 2  # Adjusted thickness
 
         frame = cv2.putText(frame, text, (x, y), font, font_scale, font_color, thickness, cv2.LINE_AA)
 
@@ -35,7 +34,6 @@ def add_moving_text_to_video(input_video_path, output_video_path, text):
 
     # Write the result to a new video file
     new_clip.write_videofile(output_video_path, codec='libx264')
-
 
 # Example usage
 input_video = "input_video.mp4"
